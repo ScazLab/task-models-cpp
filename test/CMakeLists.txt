@@ -5,11 +5,11 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(test-task-models)
 
-# Setup testing
-enable_testing()
-
 ## Gtest compilation has been taken from https://github.com/kaizouman/gtest-cmake-example
 find_package(Threads REQUIRED)
+
+# Enable Tests
+include(CTest)
 
 # Enable ExternalProject CMake module
 include(ExternalProject)
