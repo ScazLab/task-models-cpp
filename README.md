@@ -1,4 +1,4 @@
-# Task models for human-robot collaboration
+# Task models for human-robot collaboration [![Build Status](https://travis-ci.org/ScazLab/task-models-cpp.svg?branch=master)](https://travis-ci.org/ScazLab/task-models-cpp)
 
 C++ port of the [task-models](https://github.com/ScazLab/task-models) Python library. It provides tools to manipulate and use task models for human robot collaboration.
 
