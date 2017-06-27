@@ -1,0 +1,46 @@
+# Copyright: (C) 2017 Social Robotics Lab - Yale University
+# Authors: Alessandro Roncone <alessandro.roncone@yale.edu>
+# CopyPolicy: Released under the terms of the GNU LGPL v2.1.
+
+sudo: required
+dist: trusty
+language: cpp
+cache:
+  - apt
+notifications:
+  email: false
+  slack:
+    secure: DHrr+QWmiliV0O3EvNUqqPYiuqqBkvYSwxIR+ufyDOCo2itGNakOzfmcJP0QEBBRvz6R84SqNPq4xxHwrnFJ9T82gfyiDznStptCS0j2+JVlFkvDYA+K9ZbJZcBLzg812S6H6me+0rdS1Ho0rI8d5uIK6DcLHR0inBE26AKOLmvpFfoGqfBPDxOftJR9s/vk9hl8hkj6Z/3F7w45VKWHCI4pqaiFxcVoQ+jS9BajB5eDmCglxD8yHkL06hsMcDw27eOyKgsg2mt0A+VETCCt+9GtYraSDyxPvm2oOt7L99spVmWfURtmZxSBwRmeLxVdamBKdGJPH7TpzLFR6VinGIbdOk87ptGKgVMSMsOQMHFlEKY+3zNqBkAE4Q34es+JJA0r1ZSIDXj10VUBQ9CXkeKr3782sdGNepMtXUkJM2xNNsUo8ibKfcK7CA3vOcQWjYJtAt+2F5OqRNDUFWH0L3LloCHyY4cVywBTC0hNdfOofE0e9YZqs6et8loVw+d3ehmYw1TdCOZCzItD4RMQ7DYoc6KCMRX5fErRAYqI2ClHx39j+4F85oUTJxyhklQswAbfg6i5L+o5EgPjH/JuEqRuSw7/dKyv/QcCxn4FsAv45jw7/P69rpSfNougNggWUuIDx2AeFzAFge1VEfeJcUE9MdPgcoBI0dOr1TejTrM=
+addons:
+  apt:
+    packages:
+      - valgrind
+
+# Configuration variables. All variables are global now, but this can be used to
+# trigger a build matrix for different ROS distributions if desired.
+env:
+  global:
+    - CI_SOURCE_PATH=$(pwd)
+    - REPO_NAME=$(echo $TRAVIS_REPO_SLUG | cut -d"/" -f2)
+    - CTEST_EXT_COLOR_OUTPUT=TRUE
+    - CTEST_BUILD_FLAGS=-j8
+
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+      env: CTEST_TARGET_SYSTEM=Linux-gcc    CTEST_MODEL=Nightly
+    - os: osx
+      compiler: clang
+      env: CTEST_TARGET_SYSTEM=MacOS-clang  CTEST_MODEL=Nightly
+
+install:
+  - cd $CI_SOURCE_PATH
+  - mkdir build
+  - cd build
+  - cmake ../
+  - make -j8
+
+script:
+  - cd $CI_SOURCE_PATH/build/test
+  - ctest -W -S
