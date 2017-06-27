@@ -1,87 +1,74 @@
-# Copyright: (C) 2017 Social Robotics Lab - Yale University
-# Authors: Alessandro Roncone <alessandro.roncone@yale.edu>
-# CopyPolicy: Released under the terms of the GNU LGPL v2.1.
-
 sudo: required
 dist: trusty
 language: generic
 cache:
-  - apt
+- apt
 notifications:
   email: false
   slack:
-    secure: DHrr+QWmiliV0O3EvNUqqPYiuqqBkvYSwxIR+ufyDOCo2itGNakOzfmcJP0QEBBRvz6R84SqNPq4xxHwrnFJ9T82gfyiDznStptCS0j2+JVlFkvDYA+K9ZbJZcBLzg812S6H6me+0rdS1Ho0rI8d5uIK6DcLHR0inBE26AKOLmvpFfoGqfBPDxOftJR9s/vk9hl8hkj6Z/3F7w45VKWHCI4pqaiFxcVoQ+jS9BajB5eDmCglxD8yHkL06hsMcDw27eOyKgsg2mt0A+VETCCt+9GtYraSDyxPvm2oOt7L99spVmWfURtmZxSBwRmeLxVdamBKdGJPH7TpzLFR6VinGIbdOk87ptGKgVMSMsOQMHFlEKY+3zNqBkAE4Q34es+JJA0r1ZSIDXj10VUBQ9CXkeKr3782sdGNepMtXUkJM2xNNsUo8ibKfcK7CA3vOcQWjYJtAt+2F5OqRNDUFWH0L3LloCHyY4cVywBTC0hNdfOofE0e9YZqs6et8loVw+d3ehmYw1TdCOZCzItD4RMQ7DYoc6KCMRX5fErRAYqI2ClHx39j+4F85oUTJxyhklQswAbfg6i5L+o5EgPjH/JuEqRuSw7/dKyv/QcCxn4FsAv45jw7/P69rpSfNougNggWUuIDx2AeFzAFge1VEfeJcUE9MdPgcoBI0dOr1TejTrM=
+    secure: cgBnoOCw46e5/JRi4s7tgaXK3klSERRclRF9J3BFYtHxZ8drKu/or+9jQYrfyb+I9TzWGUxrWuF6Nfq8n2bJehaGvr+s64ygVyUxfP1s6jVC4PzyUIk4+DrUfWR4S/yTZlO0R2Udf3emKCm3YZVN4C5QVClRzzBZw5a/VEXpsHWnzeJacB2wXWsjtwd+kIoRWaw6OlTBoF+J6ZtZirG2QxOBdSzpRvPpQwhftr/k6Q50gZ76R+TOF9HIcMnpLncTiry3UX9y1qljGTpQsAC1SHlEFIwrq0qjYvBI/AATHf1i7YCFYu2vEs7CS3+H1jNb+7yF5Tq1ZSgznwVS8FELfdy20XNbhcFFzcK7kWY2+EU+DHYAMdv7I6FcNW4ZRiFuaNiOsDJYjARlHYbcq0c9h0vFw/cGyuXQRZe4mpNxuf6B4xjEN55IykiZ1MTac8IfjvGgp+YkcaJnMZyaBH7XTgaTgqK90+sMSl8ekOWhR1/eF2u6EZyuK/uQh/1UR8uXAM58kAiyiFvZoL0xcATFhxA19OI1GhV8Ys47ndeAJRzXc64XUmXyrzTHHCrr5wh1EBU4UvpvZaG8gVH6DYdBc/XQtfdiNJ/WoWS5wzxmJT4WACwFAtAZL8Z2zOuCowvUIVQivPXrZ2XIXq8WM+Q/WkwYu5eFW7xDrPiDbFnO03k=
 addons:
   apt:
     packages:
-      - valgrind
+    - valgrind
 
 # Configuration variables. All variables are global now, but this can be used to
 # trigger a build matrix for different ROS distributions if desired.
 env:
   global:
-    - CI_SOURCE_PATH=$(pwd)
-    - REPO_NAME=$(echo $TRAVIS_REPO_SLUG | cut -d"/" -f2)
-    - CTEST_EXT_COLOR_OUTPUT=TRUE
-    - CTEST_BUILD_FLAGS=-j8
-
+  - CI_SOURCE_PATH=$(pwd)
+  - REPO_NAME=$(echo $TRAVIS_REPO_SLUG | cut -d"/" -f2)
+  - CTEST_EXT_COLOR_OUTPUT=TRUE
+  - CTEST_BUILD_FLAGS=-j8
 matrix:
   include:
-    - os: linux
-      compiler: g++-5
-      env: CTEST_TARGET_SYSTEM=Linux-gcc CTEST_MODEL=Nightly CXX=g++-5 CC=gcc-5
-      addons:
-        apt:
-          packages:
-            - g++-5
-          sources: &sources
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty
-            - llvm-toolchain-trusty-3.7
-            - llvm-toolchain-trusty-3.6
-    - os: linux
-      compiler: g++-4.9
-      env: CTEST_TARGET_SYSTEM=Linux-gcc CTEST_MODEL=Nightly CXX=g++-4.9 CC=gcc-4.9
-      addons:
-        apt:
-          packages:
-            - g++-4.9
-          sources: *sources
-    - os: linux
-      compiler: clang-3.8
-      env: CTEST_TARGET_SYSTEM=Linux-gcc CTEST_MODEL=Nightly CXX=clang++-3.8 CC=clang-3.8
-      addons:
-        apt:
-          packages:
-            - clang-3.8
-          sources: *sources
-    - os: linux
-      compiler: clang-3.7
-      env: CTEST_TARGET_SYSTEM=Linux-gcc CTEST_MODEL=Nightly CXX=clang++-3.7 CC=clang-3.7
-      addons:
-        apt:
-          packages:
-            - clang-3.7
-          sources: *sources
-    - os: linux
-      compiler: clang-3.6
-      env: CTEST_TARGET_SYSTEM=Linux-gcc CTEST_MODEL=Nightly CXX=clang++-3.6 CC=clang-3.6
-      addons:
-        apt:
-          packages:
-            - clang-3.6
-      sources: *sources
-    - os: osx
-      compiler: clang
-      env: CTEST_TARGET_SYSTEM=MacOS-clang  CTEST_MODEL=Nightly
+  - os: linux
+    compiler: g++-5
+    env: CTEST_TARGET_SYSTEM=Linux-gcc CTEST_MODEL=Nightly CXX=g++-5 CC=gcc-5
+    addons:
+      apt:
+        packages:
+        - g++-5
+        sources: &1
+        - ubuntu-toolchain-r-test
+        - llvm-toolchain-trusty
+        - llvm-toolchain-trusty-3.7
+        - llvm-toolchain-trusty-3.6
+  - os: linux
+    compiler: g++-4.9
+    env: CTEST_TARGET_SYSTEM=Linux-gcc CTEST_MODEL=Nightly CXX=g++-4.9 CC=gcc-4.9
+    addons:
+      apt:
+        packages:
+        - g++-4.9
+        sources: *1
+  - os: linux
+    compiler: clang-3.8
+    env: CTEST_TARGET_SYSTEM=Linux-gcc CTEST_MODEL=Nightly CXX=clang++-3.8 CC=clang-3.8
+    addons:
+      apt:
+        packages:
+        - clang-3.8
+        sources: *1
+  - os: linux
+    compiler: clang-3.6
+    env: CTEST_TARGET_SYSTEM=Linux-gcc CTEST_MODEL=Nightly CXX=clang++-3.6 CC=clang-3.6
+    addons:
+      apt:
+        packages:
+        - clang-3.6
+    sources: *1
+  # - os: osx
+  #   compiler: clang
+  #   env: CTEST_TARGET_SYSTEM=MacOS-clang  CTEST_MODEL=Nightly
+
 
 install:
-  - cd $CI_SOURCE_PATH
-  - mkdir build
-  - cd build
-  - cmake ../
-  - make -j8
-
+- cd $CI_SOURCE_PATH
+- mkdir build
+- cd build
+- cmake ../
+- make -j8
 script:
-  - cd $CI_SOURCE_PATH/build/test
-  - ctest -W -S
+- cd $CI_SOURCE_PATH/build/test
+- ctest -W -S
