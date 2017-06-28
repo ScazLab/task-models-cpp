@@ -7,11 +7,6 @@ notifications:
   email: false
   slack:
     secure: cgBnoOCw46e5/JRi4s7tgaXK3klSERRclRF9J3BFYtHxZ8drKu/or+9jQYrfyb+I9TzWGUxrWuF6Nfq8n2bJehaGvr+s64ygVyUxfP1s6jVC4PzyUIk4+DrUfWR4S/yTZlO0R2Udf3emKCm3YZVN4C5QVClRzzBZw5a/VEXpsHWnzeJacB2wXWsjtwd+kIoRWaw6OlTBoF+J6ZtZirG2QxOBdSzpRvPpQwhftr/k6Q50gZ76R+TOF9HIcMnpLncTiry3UX9y1qljGTpQsAC1SHlEFIwrq0qjYvBI/AATHf1i7YCFYu2vEs7CS3+H1jNb+7yF5Tq1ZSgznwVS8FELfdy20XNbhcFFzcK7kWY2+EU+DHYAMdv7I6FcNW4ZRiFuaNiOsDJYjARlHYbcq0c9h0vFw/cGyuXQRZe4mpNxuf6B4xjEN55IykiZ1MTac8IfjvGgp+YkcaJnMZyaBH7XTgaTgqK90+sMSl8ekOWhR1/eF2u6EZyuK/uQh/1UR8uXAM58kAiyiFvZoL0xcATFhxA19OI1GhV8Ys47ndeAJRzXc64XUmXyrzTHHCrr5wh1EBU4UvpvZaG8gVH6DYdBc/XQtfdiNJ/WoWS5wzxmJT4WACwFAtAZL8Z2zOuCowvUIVQivPXrZ2XIXq8WM+Q/WkwYu5eFW7xDrPiDbFnO03k=
-addons:
-  apt:
-    packages:
-    - valgrind
-    - libeigen3-dev
 
 # Configuration variables. All variables are global now, but this can be used to
 # trigger a build matrix for different ROS distributions if desired.
@@ -49,6 +44,7 @@ matrix:
 
 
 install:
+- sudo apt install libeigen3-dev
 - cd $CI_SOURCE_PATH
 - mkdir build
 - cd build
