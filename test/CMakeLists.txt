@@ -51,10 +51,10 @@ include_directories("${source_dir}/googletest/include"
                     "${source_dir}/googlemock/include")
 
 # Add test cpp file
-add_executable(testExample     test_example.cpp)
+add_executable(testExampleClass     test_example_class.cpp)
 
 # Link test executable against gtest & gtest_main
-target_link_libraries(testExample libgtest libgmock)
+target_link_libraries(testExampleClass example-lib libgtest libgmock)
 
-add_test(NAME    testExample
-         COMMAND testExample)
+add_test(NAME    testExampleClass
+         COMMAND testExampleClass)
