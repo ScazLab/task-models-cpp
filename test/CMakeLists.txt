@@ -52,9 +52,14 @@ include_directories("${source_dir}/googletest/include"
 
 # Add test cpp file
 add_executable(testExampleClass     test_example_class.cpp)
+add_executable(testUtils                    test_utils.cpp)
 
 # Link test executable against gtest & gtest_main
 target_link_libraries(testExampleClass example-lib libgtest libgmock)
+target_link_libraries(testUtils        task-models libgtest libgmock)
 
 add_test(NAME    testExampleClass
          COMMAND testExampleClass)
+
+add_test(NAME    testUtils
+         COMMAND testUtils)
