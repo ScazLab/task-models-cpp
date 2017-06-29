@@ -18,15 +18,15 @@ TEST(testUtils, isNormal)
 	testMatrix2(0,1) = 0.3;
 	testMatrix2(1,0) = 0.1;
 	testMatrix2(1,1) = 0.1;
-    EXPECT_EQ(isNormal(testMatrix2), true);
+	EXPECT_EQ(isNormal(testMatrix2), true);
 
-    testMatrix2(1,1) = 0.5;
-    EXPECT_EQ(isNormal(testMatrix2), false);
+	testMatrix2(1,1) = 0.5;
+	EXPECT_EQ(isNormal(testMatrix2), false);
 }
 
 int main(int argc, char **argv)
 {
-    ::testing::InitGoogleTest(&argc, argv);
-    int ret = RUN_ALL_TESTS();
-    return ret;
+	::testing::InitGoogleTest(&argc, argv);
+	int ret = RUN_ALL_TESTS();
+	return ret;
 }
