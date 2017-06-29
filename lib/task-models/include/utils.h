@@ -8,4 +8,4 @@
  * @param  epsilon optional interval for check
  * @return         true/false if success/failure
  */
-bool isNormal(Eigen::MatrixXd array, double epsilon=1e-10, std::string name="array");
+bool isNormal(Eigen::MatrixXd _array, double _epsilon=1e-10, std::string _name="array");
