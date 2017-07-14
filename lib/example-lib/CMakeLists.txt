@@ -6,6 +6,8 @@ cmake_minimum_required(VERSION 2.8.3)
 
 add_library(example-lib include/example-lib/exampleClass.h     src/exampleClass.cpp)
 
+# Replaced exampleClass with task_htm
+
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
 # paths.
