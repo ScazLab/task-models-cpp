@@ -4,20 +4,18 @@
 
 TEST(testExampleClass, testConstructor)
 {
-    //printf("asodfij\n");
-    HierarchicalTask ht;
-    //printf("acjajc\n");
-    
+    HierarchicalTask ht("/home/alecive/code/task-models-cpp/test/task-model.js");
+
     //  ht.printJson();
 
-    json j = ht.returnDeserialization();
+    json j = ht.getJson();
 
 
     SubTask subtasks = parseNode(j);
-   
-    subtasks.printSubTask();
 
-    subtasks.printChildren();
+    ht.getHTM().printSubTask();
+
+    ht.getHTM().printChildren();
 
 
     //std::vector<SubTask> subtasks;
@@ -36,16 +34,16 @@ TEST(testExampleClass, testConstructor)
 
     // boolean value; returns 1 or 0
     std::cout << j.empty() << std::endl;
-    
+
     // std::cout << j.type() << std::endl;
     // std::cout << j.clear() << std::endl;
-   
+
     j.size();     // 3 entries
     j.empty();    // false
     j.type();     // json::value_t::array
     j.clear();    // the array is empty again
 */
-    
+
 }
 
 int main(int argc, char **argv)

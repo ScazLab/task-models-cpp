@@ -2,44 +2,30 @@
 
 HierarchicalTask::HierarchicalTask()
 {
-    std::ifstream jsonFile;
-    jsonFile.open("/home/andrew/Desktop/task-models-cpp/lib/task-models/src/Task_model_format.js");
 
-    json j;
-    jsonFile >> j;
-    deserialization = j;
-
-    // added for test and debugging
-    namevalue = j.at("name").get<std::string>();
-
-    children = j["children"];
-
-    subchildren = children[0];
-
-    action = subchildren["children"][0];
-
-    //childrennamevalue = children.at("name").get<std::string>();
-
-    //  childrenarray = j.at("children").get<std::unordered_map<std::string, json>>();
-   //children = j.at("children").get<json::array>();
 }
 
-json HierarchicalTask::returnDeserialization()
+HierarchicalTask::HierarchicalTask(std::string _filename)
 {
-    return deserialization;
+    std::ifstream jsonFile;
+    jsonFile.open(_filename);
+
+    jsonFile >> json_obj;
+
+    htm = parseNode(json_obj);
 }
 
 void HierarchicalTask::printJson()
 {
-  //  std::cout << std::setw(4) << deserialization << std::endl;
+    //  std::cout << std::setw(4) << json_obj << std::endl;
 
     // added for test and debugging
 
-    std::cout << "This is the value of name: " << namevalue << std::endl;
+    // std::cout << "This is the value of name: " << namevalue << std::endl;
 
 
-    std::cout << "This is a child of task store in array position 0 \n" << std::setw(4) << subchildren << std::endl;
-    std::cout << "This is an action of a child of a child stored in position 0 \n" << std::setw(4) << action << std::endl;
+    // std::cout << "This is a child of task store in array position 0 \n" << std::setw(4) << subchildren << std::endl;
+    // std::cout << "This is an action of a child of a child stored in position 0 \n" << std::setw(4) << action << std::endl;
 
     // std::cout << std::setw(4) << children << std::endl;
     //std::cout << "This is the value of name: " << childrennamevalue << std::endl;
