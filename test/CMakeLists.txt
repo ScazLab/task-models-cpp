@@ -69,3 +69,13 @@ add_test(NAME    testExampleClass
 
 add_test(NAME    testHierarchicalTask
          COMMAND testHierarchicalTask)
+
+# Copy all the test input files into the build folder for running tests
+file(GLOB test_input_files   "*.js")
+
+add_custom_target(copy)
+foreach(test_input_file ${test_input_files})
+  add_custom_command(TARGET testHierarchicalTask POST_BUILD
+                     COMMAND ${CMAKE_COMMAND} -E copy ${test_input_file} ${CMAKE_SOURCE_DIR}/build/test/
+                     COMMENT "[test] moving ${test_input_file} into ${CMAKE_SOURCE_DIR}/build/test/")
+endforeach()

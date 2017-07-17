@@ -4,7 +4,7 @@
 
 TEST(testExampleClass, testConstructor)
 {
-    HierarchicalTask ht("/home/alecive/code/task-models-cpp/test/task-model.js");
+    HierarchicalTask ht("./task-model.js");
 
     //  ht.printJson();
 
