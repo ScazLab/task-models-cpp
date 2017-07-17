@@ -151,47 +151,45 @@ public:
 
     ~HierarchicalTask() {};
 }; 
-
+// Node is the highest level in the task tree
+// (Named "task" in our Task_model_format json file)
 class Node
 {
-private:
+protected:
     std::string name;
     std::string type;
 
 public:
-    
+
+    Node(std::string _name, std::string _type);
+
+    void setName(std::string _name);
+
+    void setType(std::string _type);
+
+    void printNode();
+
 };
 
 class SubTask : public Node 
 {
-private:
-    std::string name;
-    std::string type;
-
 public:
 
     std::vector<SubTask> children;
-
-    SubTask();
     
     SubTask(std::string _name, std::string _type);
-    // SubTask(std::string _filename);
 
     void printSubTask();
+
+    void printChildren();
 
     ~SubTask() {};
 };
 
-//have a class for action that is derived from SubTask
-//this will create objects for the action children in the json
-
-class Action : public SubTask
+class Action : public Node
 {
-private:
-    std::string name;
-    std::string type;
-
 public:
+    std::string action;
 
     Action(std::string _name, std::string _type);
 

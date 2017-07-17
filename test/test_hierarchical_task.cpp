@@ -14,8 +14,13 @@ TEST(testExampleClass, testConstructor)
 
 
     SubTask subtasks = parseNode(j);
-    //std::vector<SubTask> subtasks;
+   
+    subtasks.printSubTask();
 
+    subtasks.printChildren();
+
+
+    //std::vector<SubTask> subtasks;
     //subtasks = parseNode(j);
 
 

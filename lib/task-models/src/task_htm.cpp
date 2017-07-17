@@ -52,7 +52,6 @@ std::set<std::string> BaseGraph::allNodes()
     return nodes;
 }
 
-
 // this is used to pass an object to json, which then generates a string
 // that is printed out; Doesn't seem to serve any other purpose
 // for now, a name is not returned when this function is called
@@ -143,7 +142,7 @@ HierarchicalTask::HierarchicalTask()
     jsonFile >> j;
     deserialization = j;
 
-    // added for test
+    // added for test and debugging
     namevalue = j.at("name").get<std::string>();
 
     children = j["children"];
@@ -154,7 +153,7 @@ HierarchicalTask::HierarchicalTask()
 
     //childrennamevalue = children.at("name").get<std::string>();
 
-  //  childrenarray = j.at("children").get<std::unordered_map<std::string, json>>();
+    //  childrenarray = j.at("children").get<std::unordered_map<std::string, json>>();
    //children = j.at("children").get<json::array>();
 }
 
@@ -167,7 +166,7 @@ void HierarchicalTask::printJson()
 {
   //  std::cout << std::setw(4) << deserialization << std::endl;
 
-    // added for test
+    // added for test and debugging
 
     std::cout << "This is the value of name: " << namevalue << std::endl;
     
@@ -175,78 +174,39 @@ void HierarchicalTask::printJson()
     std::cout << "This is a child of task store in array position 0 \n" << std::setw(4) << subchildren << std::endl;
     std::cout << "This is an action of a child of a child stored in position 0 \n" << std::setw(4) << action << std::endl;
 
-   // std::cout << std::setw(4) << children << std::endl;
+    // std::cout << std::setw(4) << children << std::endl;
     //std::cout << "This is the value of name: " << childrennamevalue << std::endl;
 
-   // std::cout << "This is the value of childrenarray: " << childrenarray << std::endl;
+    // std::cout << "This is the value of childrenarray: " << childrenarray << std::endl;
 
 }
 
-
-void HierarchicalTask::createTree()
+Node::Node (std::string _name, std::string _type)
 {
-    // using a for loop go through the json object
-    // then assign values as needed and put them into the array
-    // put these values into subtask and action
-    // then subtask and action objects get placed into the array
-
-    
-}
-
-SubTask::SubTask()
-{
-
-}
-
-SubTask::SubTask(std::string _name, std::string _type)
-{
-
     name = _name;
     type = _type;
-    /*
-    std::ifstream jsonFile;
-    jsonFile.open("/home/andrew/Desktop/task-models-cpp/lib/example-lib/src/Task_model_format.js");
+}
 
-    json::parser_callback_t cb = [] (std::string name = _name, int depth, json::parse_event_t event, json & parsed)
-    {
-        // skip object elements without value "first leg"
-        if (event == json::parse_event_t::value and parsed == json(_name))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    };
+void Node::setName(std::string _name)
+{
+    name = _name;
+}
 
-    json task = json::parse(jsonFile, cb);
+void Node::setType(std::string _type)
+{
+    type = _type;
+}
 
-    name = task["name"].get<std::string>();
-    type = task["type"].get<std::string>();
+void Node::printNode()
+{
+    std::cout << name << "\n" << std::endl;
+    std::cout << type << "\n" << std::endl;
+}
 
-    */
-
-    /*
-    std::string stringtask = task.dump();
-    
-    if (stringtask.find(_name))
-    {
-        name = _name;
-    }
-    else
-    {
-        name = "Error: Name not found";
-    }
-
-    if (stringtask.find(_type))
-    {
-        type = _type;
-    }
-    else
-    {
-        type = "Error: Type not found";
-    } */
+SubTask::SubTask(std::string _name, std::string _type) : Node(_name, _type)
+{
+    name = _name;
+    type = _type;
 }
 
 void SubTask::printSubTask()
@@ -255,9 +215,22 @@ void SubTask::printSubTask()
     std::cout << type << std::endl;
 }
 
-Action::Action(std::string _name, std::string _type)
+void SubTask::printChildren()
 {
+    for (std::vector<SubTask>::iterator it = children.begin(); it != children.end(); it++)
+    {
+        // std::cout << *it << "\n" << std::endl;
+        it->printNode();
+    } 
 
+    //std::copy(begin(children), end(children), std::ostream_iterator<SubTask>(std::cout, " "));
+
+}
+
+Action::Action(std::string _name, std::string _type) : Node(_name, _type)
+{
+    name = _name;
+    type = _type;
 }
 
 SubTask parseNode(json j)
@@ -277,12 +250,11 @@ SubTask parseNode(json j)
     
     for (json::iterator it = childrenarray.begin(); it != childrenarray.end(); ++it)
     {
-
         json subchildrenarray = *it; 
 
-        if (subchildrenarray.at("type").get<std::string>() == "action") //this should be leaf!
+        if (subchildrenarray.at("type").get<std::string>() == "leaf") //this should be leaf!
         {
-            return subtask;
+           return subtask;
         }
 
         else
@@ -290,6 +262,6 @@ SubTask parseNode(json j)
             subtask.children.push_back(parseNode(subchildrenarray));
         }
     }
-    
+
     return subtask;
 }
