@@ -130,7 +130,7 @@ std::vector<std::vector<double>> SupportiveState::beliefQuotient(std::vector<dou
 
     for (int i = 0; i < nHTM(); i++)
     {
-        int sum;
+        int sum = 0;
 
         for (int j = 0; j < n; j++)
         {

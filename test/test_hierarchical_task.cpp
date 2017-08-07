@@ -27,7 +27,7 @@ Best way to allow modification is probably taking in a string input or something
 TEST(testClasses, testDefaultPrintandFile)
 {
      //HierarchicalTask ht("/home/andrew/Desktop/task-models-cpp/test/task-model.js");
-       HierarchicalTask ht("./task-model.js");
+    HierarchicalTask ht("./task-model.js");
 
     json j = ht.getJson();
 
