@@ -44,7 +44,8 @@ TEST(testClasses, testDefaultPrintandFile)
 
 TEST(testClasses, testParseNode)
 {
-    HierarchicalTask ht("/home/andrew/Desktop/task-models-cpp/test/test_json.js");
+    //HierarchicalTask ht("/home/andrew/Desktop/task-models-cpp/test/test_json.js");
+    HierarchicalTask ht("./task-model.js");
 
     json j = ht.getJson();
     std::string jsonstring = j.dump();
