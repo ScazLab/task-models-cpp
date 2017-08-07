@@ -56,11 +56,17 @@ add_executable(testExampleClass     test_example_class.cpp)
 # Added test
 add_executable(testHierarchicalTask test_hierarchical_task.cpp)
 
+# Added test for testSupportivePomdpState
+add_executable(testSupportivePomdpState test_supportive_pomdp_state.cpp)
+
 # Link test executable against gtest & gtest_main
 target_link_libraries(testExampleClass example-lib libgtest libgmock)
 
 # Added link
 target_link_libraries(testHierarchicalTask task-models libgtest libgmock)
+
+# Added link for testSupportivePomdpState
+target_link_libraries(testSupportivePomdpState task-models libgtest libgmock)
 
 add_test(NAME    testExampleClass
          COMMAND testExampleClass)
@@ -69,6 +75,11 @@ add_test(NAME    testExampleClass
 
 add_test(NAME    testHierarchicalTask
          COMMAND testHierarchicalTask)
+
+# Added test for testSupportivePomdpState
+
+add_test(NAME    testSupportivePomdpState
+         COMMAND testSupportivePomdpState)
 
 # Copy all the test input files into the build folder for running tests
 file(GLOB test_input_files   "*.js")

@@ -2,48 +2,58 @@
 
 #include "task-models/task_htm.h"
 
-TEST(testExampleClass, testConstructor)
-{
-    HierarchicalTask ht("./task-model.js");
+/*
+Some notes: clean up and add function documentation
+make some of the variables that are currently public private
+and access them using getter/setter functions
 
-    //  ht.printJson();
+For testing the json write out a new json file
+then take this json, convert it using what you have so far
+then turn the converted json into a string using a new function 
+then do a string comparsion (compare this string to a manually typed out string
+of the json object you make)
+
+Some additional notes
+
+Write a way to add a subtask / action to the children vector that holds all the states and actions. 
+Then also add that subtask / action to the actual json file
+and save it. Add tests for this (best way to do it is create a json file j1 , then create 
+another json file that is almost like it, j2 - then modify j2 to be j1 using the new way you 
+implemented. Compare that the two files are identical)
+
+Best way to allow modification is probably taking in a string input or something from the user (ask Alessandro!) 
+ */
+
+TEST(testClasses, testDefaultPrintandFile)
+{
+     //HierarchicalTask ht("/home/andrew/Desktop/task-models-cpp/test/task-model.js");
+       HierarchicalTask ht("./task-model.js");
 
     json j = ht.getJson();
 
+    SubTask* subtask = dynamic_cast<SubTask*>(ht.getHTM());
 
-    SubTask subtasks = parseNode(j);
+    std::cout << "\n";
+    // We changed this to private so it is no longer accessible
+    // Write a getter function that returns the subtask children!
+    // std::cout << "The size of the children vector is: " << subtask->children.size() << std::endl;
+    std::cout << "\n";
+    
+    subtask->print();
+}
 
-    ht.getHTM().printSubTask();
+TEST(testClasses, testParseNode)
+{
+    HierarchicalTask ht("/home/andrew/Desktop/task-models-cpp/test/test_json.js");
 
-    ht.getHTM().printChildren();
+    json j = ht.getJson();
+    std::string jsonstring = j.dump();
 
+    SubTask* subtask = dynamic_cast<SubTask*>(ht.getHTM());
 
-    //std::vector<SubTask> subtasks;
-    //subtasks = parseNode(j);
+    std::cout << jsonstring << std::endl;
 
-
-/*
-    printf((j.is_null()) ?"true \n":"false \n");
-    printf((j.is_number()) ?"true \n":"false \n");
-    printf((j.is_boolean()) ?"true \n":"false \n");
-    printf((j.is_object()) ?"true \n":"false \n");
-    printf((j.is_array()) ?"true \n":"false \n");
-    printf((j.is_string()) ?"true \n":"false \n");
-
-    std::cout << j.size() << std::endl;
-
-    // boolean value; returns 1 or 0
-    std::cout << j.empty() << std::endl;
-
-    // std::cout << j.type() << std::endl;
-    // std::cout << j.clear() << std::endl;
-
-    j.size();     // 3 entries
-    j.empty();    // false
-    j.type();     // json::value_t::array
-    j.clear();    // the array is empty again
-*/
-
+    subtask->print(); 
 }
 
 int main(int argc, char **argv)
@@ -52,3 +62,6 @@ int main(int argc, char **argv)
     int ret = RUN_ALL_TESTS();
     return ret;
 }
+
+// String of the test_json object
+// {"children":[{"children":[{"action":{"conditions":[["uses","joints"],["uses","screws"],["uses","screwdriver"],["consumes","leg"],["support","hold-h"]]},"name":"assemble leg-1","type":"leaf"}],"name":"first leg","type":"sequential"}],"name":"task","type":"sequential"}

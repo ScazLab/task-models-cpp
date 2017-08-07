@@ -18,20 +18,6 @@ HierarchicalTask::HierarchicalTask(std::string _filename)
 void HierarchicalTask::printJson()
 {
     //  std::cout << std::setw(4) << json_obj << std::endl;
-
-    // added for test and debugging
-
-    // std::cout << "This is the value of name: " << namevalue << std::endl;
-
-
-    // std::cout << "This is a child of task store in array position 0 \n" << std::setw(4) << subchildren << std::endl;
-    // std::cout << "This is an action of a child of a child stored in position 0 \n" << std::setw(4) << action << std::endl;
-
-    // std::cout << std::setw(4) << children << std::endl;
-    //std::cout << "This is the value of name: " << childrennamevalue << std::endl;
-
-    // std::cout << "This is the value of childrenarray: " << childrenarray << std::endl;
-
 }
 
 Node::Node (std::string _name, std::string _type)
@@ -50,10 +36,9 @@ void Node::setType(std::string _type)
     type = _type;
 }
 
-void Node::printNode()
+void Node::print()
 {
-    std::cout << name << "\n" << std::endl;
-    std::cout << type << "\n" << std::endl;
+    std::cout << "Node name: " << name << "\ttype: " << type << std::endl;
 }
 
 SubTask::SubTask(std::string _name, std::string _type) : Node(_name, _type)
@@ -62,59 +47,130 @@ SubTask::SubTask(std::string _name, std::string _type) : Node(_name, _type)
     type = _type;
 }
 
-void SubTask::printSubTask()
+void SubTask::setChildren(Node* _node)
 {
-    std::cout << name << std::endl;
-    std::cout << type << std::endl;
+    children.push_back(_node);
 }
 
 void SubTask::printChildren()
 {
-    for (std::vector<SubTask>::iterator it = children.begin(); it != children.end(); it++)
-    {
-        // std::cout << *it << "\n" << std::endl;
-        it->printNode();
+    for (std::vector<Node*>::iterator it = children.begin(); it != children.end(); it++)
+    {   
+        (*it)->print();
     }
-
-    //std::copy(begin(children), end(children), std::ostream_iterator<SubTask>(std::cout, " "));
-
 }
 
-Action::Action(std::string _name, std::string _type) : Node(_name, _type)
+void SubTask::print()
+{
+    Node::print();
+    printChildren();
+    printf("\n");
+}
+
+bool SubTask::stringCompare()
+{
+    //define the method
+    print();
+    
+    return false;
+}
+
+std::vector<Node*> SubTask::getStateChildren()
+{
+    std::vector<Node*> statevector;
+
+    for (std::vector<Node*>::iterator it = children.begin(); it != children.end(); it++)
+    {   
+        Node* compare = *it;
+
+        if (compare->getType() == "sequential")
+        {
+            statevector.push_back(*it);
+        }  
+    }
+
+    return statevector;
+}
+
+std::vector<Node*> SubTask::getActionChildren()
+{
+    //define this later to return the type of
+    //vector that "supportivepomdp" expects 
+    std::vector<Node*> actionvector;
+
+    return actionvector;
+}
+
+Action::Action(std::string _name, std::string _type, std::vector<std::vector<std::string>> _action) : Node(_name, _type)
 {
     name = _name;
     type = _type;
+    action = _action;
 }
 
-SubTask parseNode(json j)
+void Action::printAction()
 {
+   for (std::vector<std::vector<std::string>>::iterator it = action.begin(); it != action.end(); it++)
+   {
+        std::vector<std::string> temp = *it;
+        for (std::vector<std::string>::iterator itt = temp.begin(); itt != temp.end(); itt++)
+        {
+            std::cout << *itt << std::endl;
+        }
+   }
+}
 
+void Action::print()
+{
+    Node::print();
+    printAction();
+    printf("\n");
+}
+
+Node* parseNode(json j)
+{
     std::string namevalue = j.at("name").get<std::string>();
     std::string typevalue = j.at("type").get<std::string>();
-
-    // Creates a json array-type object containing children
-
     json childrenarray = j["children"];
 
-    SubTask subtask(namevalue, typevalue);
-
+    SubTask* subtask = new SubTask(namevalue, typevalue);
     printf("\n");
-    subtask.printSubTask();
 
     for (json::iterator it = childrenarray.begin(); it != childrenarray.end(); ++it)
     {
         json subchildrenarray = *it;
 
-        if (subchildrenarray.at("type").get<std::string>() == "leaf") //this should be leaf!
+       if (subchildrenarray.at("type").get<std::string>() == "leaf") 
         {
-           return subtask;
-        }
+            namevalue = subchildrenarray.at("name").get<std::string>();
+            typevalue = subchildrenarray.at("type").get<std::string>();
 
+            json conditionarray = subchildrenarray["action"]["conditions"];
+            std::vector<std::vector<std::string>> actionvalue;
+
+            for (unsigned int i = 0; i < conditionarray.size(); i++)
+            {
+                std::vector<std::string> subvalue;
+                
+                for (unsigned int j = 0; j < 2; j++)
+                {
+                    subvalue.push_back(conditionarray[i][j]);
+                } 
+                
+                actionvalue.push_back(subvalue);
+            }
+
+           // subtask->children.push_back(new Action(namevalue, typevalue, actionvalue));
+              subtask->setChildren(new Action(namevalue, typevalue, actionvalue));
+        }
+       
         else
         {
-            subtask.children.push_back(parseNode(subchildrenarray));
+          //  subtask->children.push_back(parseNode(subchildrenarray));
+              subtask->setChildren(parseNode(subchildrenarray));
         }
     }
 
-    return subtask;
+    Node* res = subtask;
+    return res;
 }

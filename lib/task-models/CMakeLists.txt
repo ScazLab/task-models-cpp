@@ -8,7 +8,9 @@ include_directories(./include)
 message(${PROJECT_SOURCE_DIR}/lib/task-models/include)
 
 # add_library(task-models include/task-models/exampleClass.h     src/exampleClass.cpp)
-add_library(task-models include/task-models/task_htm.h     src/task_htm.cpp)
+ add_library(task-models include/task-models/task_htm.h     src/task_htm.cpp
+            include/task-models/supportive_pomdp_state.h   src/supportive_pomdp_state.cpp)
+# add_library(task-models include/task-models/supportive_pomdp_state.h   src/supportive_pomdp_state.cpp)
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
