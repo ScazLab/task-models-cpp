@@ -1,13 +1,53 @@
 #include "task-models/supportive_pomdp_state.h"
 
 
-SupportiveState::SupportiveState(int n_htm_states, int n_preferences, int n_body_features, int n_objects, int s)
+SupportiveState::SupportiveState(int n_htm_states, int n_preferences, int n_body_features, int n_objects, int states)
 {
     shiftbody    =                   n_objects;
     shiftpref    = shiftbody + n_body_features;
     shifthtm     =   shiftpref + n_preferences;
     npreferences =               n_preferences;
-    finalhtm     =            n_htm_states - 1;  
+    finalhtm     =            n_htm_states - 1; 
+    s            =                      states;
+}
+//Private
+int SupportiveState::getBit(int i ) 
+{
+    return ((s >> i) % 2); 
+}
+
+void SupportiveState::setBit(int i, int b) 
+{
+    s += ((b << i) - (getBit(i) << i)); 
+}
+
+
+//Public 
+std::string SupportiveState::suppString()
+{    
+    std::string returnstring = std::to_string(toInt()) + ": "; 
+    returnstring = returnstring + std::to_string(getHTM()) + " ";
+
+    for (int i = 0; i < (shifthtm - shiftpref); i++)
+    {
+        returnstring = returnstring + std::to_string(hasPreferences(i));
+    }
+
+    returnstring = returnstring + " ";
+
+    for (int i = 0; i < (shiftpref - shiftbody); i++)
+    {
+        returnstring = returnstring + std::to_string(hasBodyFeatures(i));
+    }
+
+    returnstring = returnstring + " ";
+
+    for (int i = 0; i < shiftbody; i++)
+    {
+        returnstring = returnstring + std::to_string(getObject(i));
+    }
+    
+    return returnstring;
 }
 
 int SupportiveState::nObjects()     
@@ -30,34 +70,29 @@ int SupportiveState::nHTM()
     return finalhtm+1; 
 }
 
-int SupportiveState::HTM()   
+int SupportiveState::getHTM()   
 { 
     return s >> shifthtm; 
 }
 
 void SupportiveState::setHTM(int n) 
 {
-    s += (n << shifthtm) - (HTM() << shifthtm); 
-}
-
-int SupportiveState::nStates() 
-{
-    return (finalhtm+1)*pow(2,shifthtm); 
+    s += (n << shifthtm) - (getHTM() << shifthtm); 
 }
 
 bool SupportiveState::isFinal() 
 {
-    return (HTM() == finalhtm); 
+    return (getHTM() == finalhtm); 
 }
 
-int SupportiveState::getBit(int i ) 
+int SupportiveState::getObject(int i)
 {
-    return ((s >> i)%2); 
+    return getBit(i);
 }
 
-void SupportiveState::setBit(int i, int b) 
+void SupportiveState::setObject(int i, int b)
 {
-    s += ((b << i) - (getBit(i) << i)); 
+    setBit(i, b);
 }
 
 int SupportiveState::hasPreferences(int i) 
@@ -80,17 +115,17 @@ void SupportiveState::setBodyFeatures(int i, int b)
     setBit(shiftbody+i, b); 
 }
 
-int SupportiveState::to_int() 
+int SupportiveState::toInt() 
 {
     return s; 
 }
 
-//ok so this accepting a 1d doubles array; what's being returned here is an 
-//array of summations
-//this array contains the sums of each row of the reshaped array
-//returns a pointer to a double array
+void SupportiveState::setInt(int state)
+{
+    s = state;
+}
 
-std::vector<std::vector<double>> SupportiveState::beliefQuotient(std::vector<double> array)
+std::vector<double> SupportiveState::beliefHTM(std::vector<double> array)
 {   
     int n = pow(2, shifthtm);
     //throw in an assertion / exception similar to what's in the python code here 
@@ -104,7 +139,6 @@ std::vector<std::vector<double>> SupportiveState::beliefQuotient(std::vector<dou
     // However for now, just like in the python code,
     // it serves as clarification in regards to what
     // is occuring
-    //double array2d [nHTM()][n];
 
     std::vector<std::vector<double>> array2d(n, std::vector<double>(nHTM()));
     
@@ -114,7 +148,7 @@ std::vector<std::vector<double>> SupportiveState::beliefQuotient(std::vector<dou
 
         for (int j = 0; j < n; j++)
         {
-            if (counter == length)
+            if (length == counter)
             {
                 break;
             }
@@ -125,40 +159,39 @@ std::vector<std::vector<double>> SupportiveState::beliefQuotient(std::vector<dou
         array2d[i] = temp;
     }
 
-    //sum each row of array2d, return the sums as a 2d array 
-    std::vector<std::vector<double>> arraysum(1, std::vector<double>(nHTM()));
+    double sum = 0;
+
+    //sum each row of array2d, return the sums as a 1d vector 
+    std::vector<double> arraysum;
 
     for (int i = 0; i < nHTM(); i++)
     {
-        int sum = 0;
+        sum = 0;
 
         for (int j = 0; j < n; j++)
         {
             sum += array2d[i][j];
         }
         
-        arraysum[i][1] = sum;
+        arraysum.push_back(sum);
     }
-
     return arraysum; 
 }
 
-// for this function do not reshape the arrays
-// like you did in the previous function. Create an
-// algorithm to go through the passed array to extract the
-// values you need 
-// refer to the whiteboard/photos you took in order to implement this
 std::vector<double> SupportiveState::beliefPreferences(std::vector<double> array)
 {
-    // include some assertion here; just like in the python code
-    
-    int length = array.size();
+    int length = array.size();  
     int n_htm = nHTM();
     int segment = length / (n_htm*2);
 
-    int preference1 = 0;
-    int preference2 = 0; 
+    double preference1 = 0;
+    double preference2 = 0; 
 
+    //debugging
+  //  std::cout << "length: " << length << std::endl;
+  //  std::cout << "n_htm: " << n_htm << std::endl;
+  //  std::cout << "segment: " << segment << std::endl;
+    //
 
     for (int i = 0; i < n_htm; i++)
     {
@@ -167,12 +200,20 @@ std::vector<double> SupportiveState::beliefPreferences(std::vector<double> array
         
         for (int j = interval; j < (interval+segment); j++)
         {
-            preference1 = array[j];
+            preference1 += array.at(j); //originally just "=" not "+="
+            //debugging
+            //std::cout << "Value of array at " << j << " is " << array.at(j) << std::endl;
+            //std::cout << "preference 1 at (i, j) " << i << " " << j << " is " << preference1 << std::endl;
+            //
         }
 
-        for (int k = interval2; k < (interval + segment); k++)
+        for (int k = interval2; k < (interval2 + segment); k++)
         {
-            preference2 = array[k];
+            preference2 += array.at(k);
+            //debugging
+            //std::cout << "Value of array at " << k << " is " << array.at(k) << std::endl;
+            //std::cout << "preference 2 at (i, k) " << i << " " << k << " is " <<preference2 << std::endl;
+            //
         }
     
     }
@@ -182,59 +223,30 @@ std::vector<double> SupportiveState::beliefPreferences(std::vector<double> array
     preferencearray.push_back(preference1);
     preferencearray.push_back(preference2);
 
+    // debugging
+    std::cout << "The value of pref1 : pref2 " << preference1 << " " << preference2 << std::endl;
+    // 
     return preferencearray;
 }
 
 void SupportiveState::randomObjectChanges(int p)
 {
-    std::vector<double> to_change;
-
-    //to_change = np.random.random((self.n_objects)) < p
-    //this line in python creates a vector of n elements
-    //each element is less than p
-
-    for (int i = 0; i < shiftbody; i++)
+    for (int i = 0; i < nObjects(); i++)
     {
-        double randomvalue = (double) rand()/RAND_MAX; //generates random value between 0 and 1 
-
-        if (randomvalue < p)
+        if ((double) rand() / RAND_MAX < p)
         {
-            to_change.push_back(randomvalue); //if less than p, put it in the vector
-
-            if (randomvalue == 0)
-            {
-                setBit(i, 1 - getBit(i));
-            }
-        }
-        else
-        {
-            i--; //if greater than p, we need to try again and get a new random value
-                 //so we deincrement (this is nessecary to get a vector n_objects long)
+            setObject(i, 1 - getObject(i));
         }
     }
-
 }
 
 void SupportiveState::randomPreferenceChanges(int p)
 {
-    std::vector<double> to_change;
-
-    for (int i = 0; i < npreferences; i++)
+    for (int i = 0; i < nPreferences(); i++)
     {
-        double randomvalue = (double) rand()/RAND_MAX;
-
-        if (randomvalue < p)
+        if ((double) rand() / RAND_MAX < p)
         {
-            to_change.push_back(randomvalue);
-
-            if (randomvalue == 0)
-            {
-                setPreferences(i, 1 - hasPreferences(i));
-            }
-        }
-        else
-        {
-            i--;
+            setPreferences(i, 1 - hasPreferences(i));
         }
     }
 }

@@ -8,21 +8,27 @@
 class SupportiveState 
 {
 private:
-    std::vector<Node*> statevector;
 
     int shiftbody;
     int shiftpref;
     int shifthtm;
     int finalhtm;
     int npreferences;
-    int s; //number of the state
+    int s;
+
+    int getBit(int i );
+
+    void setBit(int i, int b);
+
 
 public: 
 
     SupportiveState() {};
     
-    SupportiveState(int n_htm_states, int n_preferences, int n_body_features, int n_objects, int s = 0);
+    SupportiveState(int n_htm_states, int n_preferences, int n_body_features, int n_objects, int states = 0);
 
+    std::string suppString();
+    
     int nObjects();
 
     int nBodyFeatures();
@@ -31,17 +37,15 @@ public:
 
     int nHTM();
 
-    int HTM();
+    int getHTM();
 
     void setHTM(int n);
 
-    int nStates();
-
     bool isFinal();
 
-    int getBit(int i );
+    int getObject(int i );
 
-    void setBit(int i, int b);
+    void setObject(int i, int b);
 
     int hasPreferences(int i);
 
@@ -51,14 +55,13 @@ public:
 
     void setBodyFeatures(int i, int b);
 
-    int to_int();
+    int toInt();
 
-    std::vector<std::vector<double>> beliefQuotient(std::vector<double> array);
+    void setInt(int state);
+
+    std::vector<double> beliefHTM(std::vector<double> array);
 
     std::vector<double> beliefPreferences(std::vector<double> array);
-
-    //probably not needed
-    //sumAllBut();
 
     void randomObjectChanges(int p);
 
